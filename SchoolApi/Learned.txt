@@ -5,3 +5,4 @@ No need for ActionResults when there is always a valid response (ex: GetAll)
 
 Functional Programming:
 - Select = Map
+- Where = Filter

@@ -25,22 +25,7 @@ public class UserService
             return null;
         return user;
     }
-    
-    /// <summary>
-    ///  Create a new User.
-    /// </summary>
-    /// <param name="email">The email you want</param>
-    /// <param name="password">The password you want</param>
-    /// <returns>Return the corresponding user.</returns>
-    public async Task<User> CreateOne(string email, string password)
-    {
-        User user = new User {Email = email};
-        _context.Users.Add(user);
-        await _context.SaveChangesAsync();
-            
-        return user;
-    }
-    
+
     /// <summary>
     /// Delete a user.
     /// </summary>

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SchoolApi.DTO;
 using SchoolApi.Models;
@@ -8,6 +9,7 @@ namespace SchoolApi.Controllers
     [Route("api/[controller]")]
     [Produces("application/json")]
     [ApiController]
+    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly UserService _userService;
@@ -30,13 +32,6 @@ namespace SchoolApi.Controllers
             if (user == null)
                 return NotFound();
             return new LiteUserDTO(user);
-        }
-        
-        [HttpPost]
-        public async Task<ActionResult<LiteUserDTO>> CreateOne(string username, string password)
-        { 
-            User result = await _userService.CreateOne(username, password);
-            return CreatedAtAction("GetOne", new {id = result.Id}, new LiteUserDTO(result));
         }
 
         /// <returns>Empty response. 400 if the user hasn't been found, 200 else</returns>
