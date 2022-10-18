@@ -1,6 +1,6 @@
+using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using SchoolApi.DAL;
-using SchoolApi.DTO;
 using SchoolApi.Models;
 
 namespace SchoolApi.Services;
@@ -9,10 +9,15 @@ public class EnrollmentService
 {
     
     private readonly SchoolApiContext _context;
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly CourseService _courseService;
+
     
-    public EnrollmentService(SchoolApiContext context)
+    public EnrollmentService(SchoolApiContext context, IHttpContextAccessor httpContextAccessor, CourseService courseService)
     {
         _context = context;
+        _httpContextAccessor = httpContextAccessor;
+        _courseService = courseService;
     }
     
     public async Task<IEnumerable<Enrollment>> GetAll()
@@ -57,5 +62,17 @@ public class EnrollmentService
         await _context.SaveChangesAsync();
         
         return true;
+    }
+
+    public List<Course> GetCourseOf()
+    {
+        int userId = int.Parse(_httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "-1");
+
+        List<Enrollment> enrollments = _context.Enrollments.Where(enrollment => enrollment.UserId == userId).ToList();
+        List<Course> courses = enrollments
+            .Select(enrollment => _courseService.GetOne(enrollment.CourseId).Result)
+            .Where(course => course != null).ToList()!;
+        
+        return courses;
     }
 }

@@ -1,7 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SchoolApi.DAL;
@@ -48,7 +47,7 @@ public class AuthService
     /// <param name="password">The password you want to hash</param>
     /// <param name="passwordHash">The password will be stored in it</param>
     /// <param name="passwordSalt">The password salt will be stored in it</param>
-    private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+    public void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
     {
         using (HMACSHA512 hmac = new HMACSHA512())
         {
@@ -102,8 +101,6 @@ public class AuthService
         {
             new (ClaimTypes.NameIdentifier, user.Id.ToString()),
             new (ClaimTypes.Email, user.Email),
-            new (ClaimTypes.Role, "Admin"),
-            new (ClaimTypes.Role, "Student")
         };
 
         var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_authToken));

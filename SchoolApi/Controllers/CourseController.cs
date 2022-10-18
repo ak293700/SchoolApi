@@ -19,13 +19,13 @@ namespace SchoolApi.Controllers
             _courseService = courseService;
         }
 
-        [HttpGet]
+        [HttpGet, AllowAnonymous]
         public async Task<IEnumerable<LiteCourseDTO>> GetAll()
         {
             return (await _courseService.GetAll()).Select(c => new LiteCourseDTO(c));
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}"), AllowAnonymous]
         public async Task<ActionResult<LiteCourseDTO>> GetOne(int id)
         {
             Course? course = await _courseService.GetOne(id);
@@ -33,7 +33,7 @@ namespace SchoolApi.Controllers
                return NotFound();
             return new LiteCourseDTO(course);
         }
-        
+
         [HttpPost]
         [Authorize(Roles = "Admin,Teacher")] // Authorize Admin || Teacher
         public async Task<ActionResult<LiteCourseDTO>> CreateOne(string name)

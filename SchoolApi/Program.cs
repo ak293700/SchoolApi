@@ -21,6 +21,7 @@ builder.Services.AddScoped<CourseService>(); // Make CourseService injectable
 builder.Services.AddScoped<EnrollmentService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<AuthService>();
+builder.Services.AddHttpContextAccessor(); // Allow to access HttpContext in services (for example to get current user roles)
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen( options =>

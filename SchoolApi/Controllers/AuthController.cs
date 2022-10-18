@@ -35,6 +35,22 @@ namespace SchoolApi.Controllers
             
             return Ok(result);
         }
-
+        
+        /*
+        Use to generate password's data for database 
+        [HttpGet]
+        public async Task<ActionResult<object>> Get(string password)
+        {
+            _authService.CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
+            // string hash = System.Text.Encoding.UTF8.GetString(passwordHash); 
+            // string salt = System.Text.Encoding.UTF8.GetString(passwordSalt);
+            string hash = Convert.ToBase64String(passwordHash);
+            string salt = Convert.ToBase64String(passwordSalt);
+            return Ok(new 
+            {
+                hash,
+                salt
+            });
+        }*/
     }
 }

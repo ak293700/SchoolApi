@@ -20,12 +20,14 @@ namespace SchoolApi.Controllers
         }
         
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IEnumerable<LiteUserDTO>> GetAll()
         {
             return (await _userService.GetAll()).Select(c => new LiteUserDTO(c));
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<LiteUserDTO>> GetOne(int id)
         {
             User? user = await _userService.GetOne(id);
@@ -36,6 +38,7 @@ namespace SchoolApi.Controllers
 
         /// <returns>Empty response. 400 if the user hasn't been found, 200 else</returns>
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteOne(int id)
         {
             bool deleted = await _userService.DeleteOne(id);
