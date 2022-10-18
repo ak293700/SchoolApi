@@ -1,0 +1,7 @@
+ActionResult:
+Wrapper for response.
+Can be use to redirect or return the response with a specific http code.
+No need for ActionResults when there is always a valid response (ex: GetAll)
+
+Functional Programming:
+- Select = Map
