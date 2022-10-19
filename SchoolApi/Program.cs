@@ -14,13 +14,17 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<SchoolApiContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    // options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    string connectionString = builder.Configuration.GetConnectionString("MySqlConnection") 
+        ?? throw new ArgumentException("Connection string not found");
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 });
 builder.Services.AddTransient<SchoolInitializer>();
 builder.Services.AddScoped<CourseService>(); // Make CourseService injectable
 builder.Services.AddScoped<EnrollmentService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<EmailService>();
 builder.Services.AddHttpContextAccessor(); // Allow to access HttpContext in services (for example to get current user roles)
 
 builder.Services.AddEndpointsApiExplorer();
@@ -73,7 +77,7 @@ else // dev mod
     app.UseSwaggerUI();
     
     // Uncomment to go back to the initial state
-    // SchoolApiContext.DropCreateDatabase(app);
+    SchoolApiContext.DropCreateDatabase(app);
 }
 
 app.UseHttpsRedirection();

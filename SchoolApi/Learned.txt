@@ -6,3 +6,7 @@ No need for ActionResults when there is always a valid response (ex: GetAll)
 Functional Programming:
 - Select = Map
 - Where = Filter
+
+// Not sur of that
+In model no need for to store the Foreign Key, just the reference to the object.
+EntityFramework will take care of the rest.

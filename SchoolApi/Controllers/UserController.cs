@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SchoolApi.DTO;
 using SchoolApi.Models;
+using SchoolApi.Models.User;
 using SchoolApi.Services;
 
 namespace SchoolApi.Controllers

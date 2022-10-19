@@ -1,4 +1,5 @@
 using SchoolApi.Models;
+using SchoolApi.Models.User;
 
 namespace SchoolApi.DAL;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ public class SchoolInitializer
     
     public void Seed()
     {
-            List<User> students = new List<User>
+            List<Student> students = new List<Student>
             {
                 new()
                 {
@@ -48,29 +49,45 @@ public class SchoolInitializer
                 },
             };
 
-            students.ForEach(s => _context.Users.Add(s));
+            students.ForEach(s => _context.Students.Add(s));
+            _context.SaveChanges();
+
+            List<Teacher> teachers = new List<Teacher>
+            {
+                new()
+                {
+                    Email = "alexandre.akdeniz@epita.fr",
+                    PasswordHash = Convert.FromBase64String(
+                        "uVaeI+REvmUsgCsYRkZJ4IVpF4UyM2/t1gOyklg7UEnPkZcUno9/o7+Z1l0FpqkUj8QzXV4nuknfEdZT9HPkoA=="),
+                    PasswordSalt = Convert.FromBase64String(
+                        "K7ojWxJlethoBwPx612+6RSiulFRLf0wOwbAuMrdBzhiFNaN/y68M9eCoXeiwMfQL/YeAEL+Pa77B50kkaauX++TVi1NEM7hzH6pdtqJJdUC2nBjdtgZjWqx7EaS8tOPfXckiQYNeGTsd2SksG35WMPyN4nviIn2WD8aG+7QUyI="),
+                    Salary = 600
+                }
+            };
+                
+            teachers.ForEach(t => _context.Teacher.Add(t));
             _context.SaveChanges();
             
             List<Course> courses = new List<Course>
             {
-                new() {Name = "C#"},
-                new() {Name = "Java"},
-                new() {Name = "C"},
-                new() {Name = "Rust"},
-                new() {Name = "HTML"},
-                new() {Name = "CSS"},
+                new() {Name = "C#", TeacherId = 6},
+                new() {Name = "Java", TeacherId = 6},
+                new() {Name = "C", TeacherId = 6},
+                new() {Name = "Rust", TeacherId = 6},
+                new() {Name = "HTML", TeacherId = 6},
+                new() {Name = "CSS", TeacherId = 6},
             };
             courses.ForEach(s => _context.Courses.Add(s));
             _context.SaveChanges();
             
             List<Enrollment> enrollments = new List<Enrollment>
             {
-                new() {CourseId = 1, UserId = 1},
-                new() {CourseId = 3, UserId = 2},
-                new() {CourseId = 2, UserId = 4},
-                new() {CourseId = 1, UserId = 5},
-                new() {CourseId = 5, UserId = 1},
-                new() {CourseId = 5, UserId = 3},
+                new() {CourseId = 1, StudentId = 1},
+                new() {CourseId = 3, StudentId = 2},
+                new() {CourseId = 2, StudentId = 4},
+                new() {CourseId = 1, StudentId = 5},
+                new() {CourseId = 5, StudentId = 1},
+                new() {CourseId = 5, StudentId = 3},
             };
             enrollments.ForEach(s => _context.Enrollments.Add(s));
             _context.SaveChanges();

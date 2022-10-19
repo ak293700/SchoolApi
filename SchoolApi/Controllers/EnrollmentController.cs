@@ -15,7 +15,7 @@ public class EnrollmentController : ControllerBase
 {
     private readonly EnrollmentService _enrollmentService;
 
-    public EnrollmentController(EnrollmentService enrollmentService, IHttpContextAccessor httpContextAccessor)
+    public EnrollmentController(EnrollmentService enrollmentService)
     {
         _enrollmentService = enrollmentService;
     }
@@ -44,7 +44,7 @@ public class EnrollmentController : ControllerBase
         if (enrollment == null)
             return NotFound();
 
-        return CreatedAtAction("GetOne", new { id = enrollment.Id }, new LiteEnrollmentDTO(enrollment));
+        return CreatedAtAction(nameof(GetOne), new { id = enrollment.Id }, new LiteEnrollmentDTO(enrollment));
     }
     
     [HttpDelete("{id}")]
@@ -61,8 +61,8 @@ public class EnrollmentController : ControllerBase
     /// </summary>
     /// <returns>Course a student is enroll in</returns>
     [HttpGet("my_courses")]
-    public IEnumerable<object> GetCourseOf()
+    public async Task<IEnumerable<object>> GetCourseOf()
     {
-        return _enrollmentService.GetCourseOf().Select(course => new LiteCourseDTO(course));
+        return (await _enrollmentService.GetCourseOf()).Select(course => new LiteCourseDTO(course));
     }
 }

@@ -1,4 +1,5 @@
 using SchoolApi.Models;
+using SchoolApi.Models.User;
 
 namespace SchoolApi.DTO;
 
@@ -15,13 +16,4 @@ public class LiteUserDTO
     
     public LiteUserDTO(User user) : this(user.Id, user.Email)
     {}
-
-    public User ToModel()
-    {
-        return new User
-        {
-            Id = Id, 
-            Email = Email
-        }; 
-    }
 }

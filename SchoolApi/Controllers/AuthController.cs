@@ -30,7 +30,7 @@ namespace SchoolApi.Controllers
         public async Task<ActionResult<string>> Login(RegisterUserDTO user)
         {
             string? result = await _authService.Login(user);
-            if (result.IsNullOrEmpty())
+            if (string.IsNullOrEmpty(result))
                 return BadRequest("Wrong email or password");
             
             return Ok(result);

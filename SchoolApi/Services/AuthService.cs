@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SchoolApi.DAL;
 using SchoolApi.DTO;
-using SchoolApi.Models;
+using SchoolApi.Models.User;
 
 namespace SchoolApi.Services;
 
@@ -25,13 +25,14 @@ public class AuthService
         // Next we need to check if the user already exists
         
         CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
-
+        
+        // TODO change that, add to method and to controller method to handle new student and new teacher
         // So we create the new user
-        User user = new User
+        Student user = new Student
         {
             Email = request.Email,
             PasswordHash = passwordHash,
-            PasswordSalt = passwordSalt
+            PasswordSalt = passwordSalt,
         };
         
         // And add it to the database

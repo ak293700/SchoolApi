@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using SchoolApi.DAL;
 using SchoolApi.Models;
+using SchoolApi.Models.User;
 
 namespace SchoolApi.Services;
 
