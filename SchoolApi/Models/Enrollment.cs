@@ -1,5 +1,4 @@
-using System.ComponentModel.DataAnnotations.Schema;
-using SchoolApi.Models.User;
+using SchoolApi.Models.UserModels;
 
 namespace SchoolApi.Models;
 

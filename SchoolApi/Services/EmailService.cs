@@ -2,30 +2,34 @@ using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
 using SchoolApi.DAL;
-using SchoolApi.Models;
-using SchoolApi.Models.User;
+using SchoolApi.Models.UserModels;
 
 namespace SchoolApi.Services;
 
 public class EmailService
 {
+    private readonly SchoolApiContext _context;
+
+    private readonly string _email;
+
     // The email and password use to send email to the user
     private readonly string _host;
-    private readonly int _port;
-    private readonly string _email;
     private readonly string _password;
-    
-    private readonly SchoolApiContext _context;
-    
+    private readonly int _port;
+
     public EmailService(SchoolApiContext context, IConfiguration configuration)
     {
         _context = context;
-        _host = configuration.GetSection("AppSettings:Email:Host").Value ?? throw new ArgumentNullException(nameof(_host));
-        _port = int.Parse(configuration.GetSection("AppSettings:Email:Port").Value ?? throw new ArgumentNullException(nameof(_port)));
-        _email = configuration.GetSection("AppSettings:Email:Address").Value ?? throw new ArgumentNullException(nameof(_email));
-        _password = configuration.GetSection("AppSettings:Email:Password").Value ?? throw new ArgumentNullException(nameof(_password));
+        _host = configuration.GetSection("AppSettings:Email:Host").Value ??
+                throw new ArgumentNullException(nameof(_host));
+        _port = int.Parse(configuration.GetSection("AppSettings:Email:Port").Value ??
+                          throw new ArgumentNullException(nameof(_port)));
+        _email = configuration.GetSection("AppSettings:Email:Address").Value ??
+                 throw new ArgumentNullException(nameof(_email));
+        _password = configuration.GetSection("AppSettings:Email:Password").Value ??
+                    throw new ArgumentNullException(nameof(_password));
     }
-    
+
     /// <summary>
     /// Send an email to the user
     /// </summary>
@@ -41,17 +45,17 @@ public class EmailService
         email.To.Add(MailboxAddress.Parse(addressTo));
         email.Subject = subject;
         email.Body = body;
-        
-        
+
+
         using SmtpClient smtp = new SmtpClient();
-        
+
         // Need to check those info and change them
         smtp.Connect(_host, 587, SecureSocketOptions.StartTls);
         smtp.Authenticate(addressFrom, password);
         smtp.Send(email);
         smtp.Disconnect(true);
     }
-    
+
     /// <summary>
     /// Send an email to the user
     /// </summary>
@@ -62,7 +66,7 @@ public class EmailService
     {
         SendEmail(_email, _password, addressTo, subject, body);
     }
-    
+
     /// <summary>
     /// Send an email to the user
     /// </summary>
@@ -75,7 +79,7 @@ public class EmailService
         User? user = _context.Users.FirstOrDefault(u => u.Id == userDistId);
         if (user == null)
             return;
-        
+
         SendEmail(_email, _password, user.Email, subject, body);
     }
 }

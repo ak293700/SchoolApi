@@ -11,7 +11,7 @@ using SchoolApi.DAL;
 namespace SchoolApi.Migrations
 {
     [DbContext(typeof(SchoolApiContext))]
-    [Migration("20221019145444_MySql")]
+    [Migration("20221019151403_MySql")]
     partial class MySql
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

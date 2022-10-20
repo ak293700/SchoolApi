@@ -4,19 +4,18 @@ using MimeKit;
 using MimeKit.Text;
 using SchoolApi.DAL;
 using SchoolApi.Models;
-using SchoolApi.Models.User;
+using SchoolApi.Models.UserModels;
 
 namespace SchoolApi.Services;
 
 public class EnrollmentService
 {
-    
     private readonly SchoolApiContext _context;
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly CourseService _courseService;
     private readonly EmailService _emailService;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    
+
     public EnrollmentService(SchoolApiContext context, IHttpContextAccessor httpContextAccessor,
         CourseService courseService, EmailService emailService)
     {
@@ -25,64 +24,67 @@ public class EnrollmentService
         _courseService = courseService;
         _emailService = emailService;
     }
-    
+
     public async Task<IEnumerable<Enrollment>> GetAll()
     {
         return await _context.Enrollments.ToListAsync();
     }
-    
+
     public async Task<Enrollment?> GetOne(int id)
     {
         return await _context.Enrollments.FindAsync(id);
     }
-    
+
     public async Task<Enrollment?> CreateOne(int courseId, int studentId)
     {
         // If the user or course doesn't exist, throw an exception
-        if (!await _context.Users.AnyAsync(s => s.Id == studentId) 
+        if (!await _context.Users.AnyAsync(s => s.Id == studentId)
             || !await _context.Courses.AnyAsync(c => c.Id == courseId))
             return null;
-            
+
         // if the enrollment already exists
         // look for an enrollment with the same course and user
-        Enrollment? model = await _context.Enrollments.FirstOrDefaultAsync(e => e.CourseId == courseId && e.StudentId == studentId);
-        
+        Enrollment? model =
+            await _context.Enrollments.FirstOrDefaultAsync(e => e.CourseId == courseId && e.StudentId == studentId);
+
         if (model != null) // should add a way to return if it has been created or if it already existed
             return model;
-        
+
         // Send an email to the user to confirm the enrollment
-        _emailService.SendEmail(studentId, "Enrollment Confirmation", 
-            new TextPart(TextFormat.Html) {Text = NewEnrollmentMessage(studentId, courseId)});
-        
-        model = new Enrollment {CourseId = courseId, StudentId = studentId};
-        
+        _emailService.SendEmail(studentId, "Enrollment Confirmation",
+            new TextPart(TextFormat.Html) { Text = NewEnrollmentMessage(studentId, courseId) });
+
+        model = new Enrollment { CourseId = courseId, StudentId = studentId };
+
         _context.Enrollments.Add(model);
         await _context.SaveChangesAsync();
 
         return model;
     }
-    
+
     public async Task<bool> DeleteOne(int id)
     {
         Enrollment? enrollment = await _context.Enrollments.FindAsync(id);
         if (enrollment == null)
             return false;
-        
+
         _context.Enrollments.Remove(enrollment);
         await _context.SaveChangesAsync();
-        
+
         return true;
     }
 
     public async Task<List<Course>> GetCourseOf()
     {
-        int userId = int.Parse(_httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "-1");
+        int userId =
+            int.Parse(_httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "-1");
 
-        List<Enrollment> enrollments = await _context.Enrollments.Where(enrollment => enrollment.StudentId == userId).ToListAsync();
+        List<Enrollment> enrollments =
+            await _context.Enrollments.Where(enrollment => enrollment.StudentId == userId).ToListAsync();
         List<Course> courses = enrollments
             .Select(enrollment => _courseService.GetOne(enrollment.CourseId).Result)
             .Where(course => course != null).ToList()!;
-        
+
         return courses;
     }
 
@@ -90,13 +92,13 @@ public class EnrollmentService
     {
         User? user = _context.Users.Find(userId);
         Course? course = _context.Courses.Find(courseId);
-        
+
         if (user == null || course == null)
             return "An error occurred while trying to enroll you in a course.";
-        
+
         string username = user.Email.Split('@')[0];
         string courseName = course.Name;
-        
+
         return
             $@"
     <h1 style=""font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;"">Bonjour {username}</h1>

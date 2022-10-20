@@ -1,4 +1,4 @@
-namespace SchoolApi.Models.User;
+namespace SchoolApi.Models.UserModels;
 
 public class Student : User
 {

@@ -5,43 +5,38 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SchoolApi.DAL;
 using SchoolApi.DTO;
-using SchoolApi.Models.User;
+using SchoolApi.Models.UserModels;
 
 namespace SchoolApi.Services;
 
 public class AuthService
 {
-    private readonly SchoolApiContext _context;
     private readonly string _authToken;
-    
+    private readonly SchoolApiContext _context;
+
     public AuthService(SchoolApiContext context, IConfiguration configuration)
     {
         _context = context;
-        _authToken = configuration.GetSection("AppSettings:AuthToken").Value ?? throw new Exception("No AuthToken in find");
+        _authToken = configuration.GetSection("AppSettings:AuthToken").Value ??
+                     throw new Exception("No AuthToken in find");
     }
-    
-    public async Task<bool> Register(RegisterUserDTO request)
+
+    public async Task<bool> Register(RegisterUserDTO request, User user)
     {
         // Next we need to check if the user already exists
-        
+
         CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
-        
-        // TODO change that, add to method and to controller method to handle new student and new teacher
-        // So we create the new user
-        Student user = new Student
-        {
-            Email = request.Email,
-            PasswordHash = passwordHash,
-            PasswordSalt = passwordSalt,
-        };
-        
-        // And add it to the database
+
+        // Set password information
+        user.PasswordHash = passwordHash;
+        user.PasswordSalt = passwordSalt;
+
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
-        
+
         return true;
     }
-    
+
     /// <summary>
     /// Create a combo of password hash and salt
     /// </summary>
@@ -54,7 +49,7 @@ public class AuthService
         {
             passwordSalt = hmac.Key; // Already generate a random salt for us
             // Hash the password with the salt
-            passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password)); 
+            passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
         }
     }
 
@@ -64,14 +59,14 @@ public class AuthService
         User? user = await _context.Users.FirstOrDefaultAsync(u => u.Email == registerUser.Email);
         if (user == null)
             return null;
-        
+
         // Check if the password is correct
         if (!VerifyPasswordHash(registerUser.Password, user.PasswordHash, user.PasswordSalt))
             return null;
-        
+
         return CreateToken(user);
     }
-    
+
     /// <summary>
     /// Check id the given password correspond to the password hash and salt
     /// </summary>
@@ -100,12 +95,12 @@ public class AuthService
     {
         List<Claim> claims = new List<Claim>
         {
-            new (ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new (ClaimTypes.Email, user.Email),
+            new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new(ClaimTypes.Email, user.Email),
         };
 
         var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_authToken));
-        
+
         // Credentials
         var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 

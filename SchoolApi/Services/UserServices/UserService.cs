@@ -1,24 +1,23 @@
 using Microsoft.EntityFrameworkCore;
 using SchoolApi.DAL;
-using SchoolApi.Models;
-using SchoolApi.Models.User;
+using SchoolApi.Models.UserModels;
 
-namespace SchoolApi.Services;
+namespace SchoolApi.Services.UserServices;
 
 public class UserService
 {
     private readonly SchoolApiContext _context;
-    
+
     public UserService(SchoolApiContext schoolApiContext)
     {
         _context = schoolApiContext;
     }
-    
+
     public async Task<IEnumerable<User>> GetAll()
     {
         return await _context.Users.ToListAsync();
     }
-    
+
     public async Task<User?> GetOne(int id)
     {
         User? user = await _context.Users.FirstOrDefaultAsync(c => c.Id.Equals(id));
@@ -37,7 +36,7 @@ public class UserService
         User? user = await _context.Users.FindAsync(id);
         if (user == null)
             return false;
-            
+
         _context.Users.Remove(user);
         await _context.SaveChangesAsync();
         return true;

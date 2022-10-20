@@ -1,11 +1,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SchoolApi.DTO;
-using SchoolApi.Models;
-using SchoolApi.Models.User;
-using SchoolApi.Services;
+using SchoolApi.Models.UserModels;
+using SchoolApi.Services.UserServices;
 
-namespace SchoolApi.Controllers
+namespace SchoolApi.Controllers.UserControllers
 {
     [Route("api/[controller]")]
     [Produces("application/json")]
@@ -14,12 +13,12 @@ namespace SchoolApi.Controllers
     public class UserController : ControllerBase
     {
         private readonly UserService _userService;
-        
+
         public UserController(UserService userService)
         {
             _userService = userService;
         }
-        
+
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<IEnumerable<LiteUserDTO>> GetAll()
