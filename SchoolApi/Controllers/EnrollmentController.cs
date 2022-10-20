@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SchoolApi.DTO;
 using SchoolApi.DTO.EnrollmentDTO;
 using SchoolApi.Models;
 using SchoolApi.Services;
@@ -53,16 +52,5 @@ public class EnrollmentController : ControllerBase
     {
         bool deleted = await _enrollmentService.DeleteOne(id);
         return deleted ? Ok() : NotFound();
-    }
-
-    /// <summary>
-    /// Get the list of course a student is enroll in.
-    /// JWT token is used so no need of student id.
-    /// </summary>
-    /// <returns>Course a student is enroll in</returns>
-    [HttpGet("my_courses")]
-    public async Task<IEnumerable<object>> GetCourseOf()
-    {
-        return (await _enrollmentService.GetCourseOf()).Select(course => new LiteCourseDTO(course));
     }
 }

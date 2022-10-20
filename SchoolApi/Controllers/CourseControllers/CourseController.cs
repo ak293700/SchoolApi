@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SchoolApi.DTO;
+using SchoolApi.DTO.CourseDTO;
 using SchoolApi.Models.CourseModels;
 using SchoolApi.Services.CourseServices;
 
@@ -21,16 +21,16 @@ namespace SchoolApi.Controllers.CourseControllers
         [HttpGet]
         public async Task<IEnumerable<LiteCourseDTO>> GetAll()
         {
-            return (await _courseService.GetAll()).Select(c => new LiteCourseDTO(c));
+            return await _courseService.GetAll();
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<LiteCourseDTO>> GetOne(int id)
         {
-            Course? course = await _courseService.GetOne(id);
+            LiteCourseDTO? course = await _courseService.GetOne(id);
             if (course == null)
                 return NotFound();
-            return new LiteCourseDTO(course);
+            return course;
         }
 
         [HttpPost]

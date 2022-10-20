@@ -1,7 +1,7 @@
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using SchoolApi.DAL;
-using SchoolApi.DTO;
+using SchoolApi.DTO.CourseDTO;
 using SchoolApi.DTO.UserDTO;
 using SchoolApi.Models.CourseModels;
 using SchoolApi.Models.UserModels;
@@ -41,7 +41,6 @@ public class TeacherService
                        ?? throw new Exception("No claim found");
 
         int teacherId = int.Parse(claim);
-
         List<Course> courses = await _context.Courses
             .Where(c => c.TeacherId == teacherId)
             .ToListAsync();

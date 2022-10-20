@@ -1,9 +1,8 @@
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using SchoolApi.DAL;
-using SchoolApi.DTO;
+using SchoolApi.DTO.CourseDTO;
 using SchoolApi.DTO.UserDTO;
-using SchoolApi.Models;
 using SchoolApi.Models.UserModels;
 
 namespace SchoolApi.Services.UserServices;
@@ -40,10 +39,13 @@ public class StudentService
                        ?? throw new Exception("No claim found");
 
         int studentId = int.Parse(claim);
-        List<Enrollment> enrollments = await _context.Enrollments.Where(e => e.StudentId == studentId)
-            .Include(e => e.Course)
-            .ToListAsync();
+        List<LiteCourseDTO> courses =
+            await _context.Enrollments
+                .Where(e => e.StudentId == studentId)
+                .Include(e => e.Course)
+                .Select(e => new LiteCourseDTO(e.CourseId, e.Course.Name))
+                .ToListAsync();
 
-        return enrollments.Select(e => new LiteCourseDTO(e.Course)).ToList();
+        return courses;
     }
 }

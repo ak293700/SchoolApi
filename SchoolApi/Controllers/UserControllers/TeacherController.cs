@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SchoolApi.DTO;
+using SchoolApi.DTO.CourseDTO;
 using SchoolApi.DTO.UserDTO;
 using SchoolApi.Services.UserServices;
 

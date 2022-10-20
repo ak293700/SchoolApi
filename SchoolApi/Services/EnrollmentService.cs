@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using MimeKit;
 using MimeKit.Text;
@@ -74,20 +73,6 @@ public class EnrollmentService
         await _context.SaveChangesAsync();
 
         return true;
-    }
-
-    public async Task<List<Course>> GetCourseOf()
-    {
-        int userId =
-            int.Parse(_httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "-1");
-
-        List<Enrollment> enrollments =
-            await _context.Enrollments.Where(enrollment => enrollment.StudentId == userId).ToListAsync();
-        List<Course> courses = enrollments
-            .Select(enrollment => _courseService.GetOne(enrollment.CourseId).Result)
-            .Where(course => course != null).ToList()!;
-
-        return courses;
     }
 
     private string NewEnrollmentMessage(int userId, int courseId)

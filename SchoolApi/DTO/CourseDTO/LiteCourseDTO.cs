@@ -1,6 +1,6 @@
 using SchoolApi.Models.CourseModels;
 
-namespace SchoolApi.DTO;
+namespace SchoolApi.DTO.CourseDTO;
 
 public class LiteCourseDTO
 {

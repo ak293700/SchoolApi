@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SchoolApi.DAL;
+using SchoolApi.DTO.CourseDTO;
 using SchoolApi.Models.CourseModels;
 
 namespace SchoolApi.Services.CourseServices;
@@ -13,17 +14,19 @@ public class CourseService
         _context = context;
     }
 
-    public async Task<IEnumerable<Course>> GetAll()
+    public async Task<IEnumerable<LiteCourseDTO>> GetAll()
     {
-        return await _context.Courses.ToListAsync();
+        return await _context.Courses
+            .Select(c => new LiteCourseDTO(c.Id, c.Name))
+            .ToListAsync();
     }
 
-    public async Task<Course?> GetOne(int id)
+    public async Task<LiteCourseDTO?> GetOne(int id)
     {
-        Course? course = await _context.Courses.FirstOrDefaultAsync(c => c.Id.Equals(id));
-        if (course == null)
-            return null;
-        return course;
+        return await _context.Courses
+            .Where(c => c.Id == id)
+            .Select(c => new LiteCourseDTO(c.Id, c.Name))
+            .FirstOrDefaultAsync();
     }
 
     /// <summary>
