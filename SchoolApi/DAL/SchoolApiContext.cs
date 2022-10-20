@@ -27,19 +27,17 @@ public class SchoolApiContext : DbContext
             if (schoolApiContext == null)
                 throw new Exception("Could not get SchoolApiContext");
 
-            schoolApiContext?.Database.EnsureDeleted();
-            schoolApiContext?.Database.EnsureCreated();
+            schoolApiContext.Database.EnsureDeleted();
+            schoolApiContext.Database.EnsureCreated();
             scope?.ServiceProvider.GetService<SchoolInitializer>()?.Seed();
         }
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        base.OnModelCreating(modelBuilder);
-
         modelBuilder.Entity<User>().ToTable("Users");
-        modelBuilder.Entity<Enrollment>().ToTable("Enrollments");
-        modelBuilder.Entity<Course>().ToTable("Courses");
+        // modelBuilder.Entity<Enrollment>().ToTable("Enrollments");
+        // modelBuilder.Entity<Course>().ToTable("Courses");
 
 
         // Create the discriminator for inheritance models
@@ -64,15 +62,10 @@ public class SchoolApiContext : DbContext
             .HasForeignKey(e => e.StudentId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        // .HasConstraintName("FK_Enrollments_Users_StudentId");
-
-        // modelBuilder.Entity<Enrollment>(entity =>
-        // {
-        // entity.ToTable("Enrollments");
-        // });
-
         // When an Enrollement is loaded it Course and User are automatically loaded too 
         // modelBuilder.Entity<Enrollment>().Navigation(e => e.Course).AutoInclude();
         // modelBuilder.Entity<Enrollment>().Navigation(e => e.Student).AutoInclude();
+
+        base.OnModelCreating(modelBuilder);
     }
 }
