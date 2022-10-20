@@ -13,7 +13,7 @@ public class SchoolApiContext : DbContext
 
     public DbSet<User> Users { get; set; }
     public DbSet<Student> Students { get; set; }
-    public DbSet<Teacher> Teacher { get; set; }
+    public DbSet<Teacher> Teachers { get; set; }
     public DbSet<Enrollment> Enrollments { get; set; }
     public DbSet<Course> Courses { get; set; }
 

@@ -79,7 +79,7 @@ public class SchoolInitializer
             }
         };
 
-        teachers.ForEach(t => _context.Teacher.Add(t));
+        teachers.ForEach(t => _context.Teachers.Add(t));
         _context.SaveChanges();
 
         List<Course> courses = new List<Course>
@@ -101,7 +101,6 @@ public class SchoolInitializer
             new() { CourseId = 2, StudentId = 4 },
             new() { CourseId = 1, StudentId = 5 },
             new() { CourseId = 5, StudentId = 1 },
-            new() { CourseId = 5, StudentId = 3 },
         };
         enrollments.ForEach(s => _context.Enrollments.Add(s));
         _context.SaveChanges();

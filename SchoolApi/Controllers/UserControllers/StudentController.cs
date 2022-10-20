@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SchoolApi.DTO;
 using SchoolApi.DTO.UserDTO;
 using SchoolApi.Services.UserServices;
 
@@ -24,5 +26,20 @@ public class StudentController : ControllerBase
             return BadRequest("Email already registered");
 
         return Ok();
+    }
+
+    [HttpGet("courses")]
+    [Authorize(Roles = "Student")]
+    public async Task<ActionResult<List<LiteCourseDTO>>> GetCourses()
+    {
+        try
+        {
+            List<LiteCourseDTO> courses = await _studentService.GetCourses();
+            return Ok(courses);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
     }
 }
