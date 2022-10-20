@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using SchoolApi.DTO;
+using SchoolApi.DTO.UserDTO;
 using SchoolApi.Services;
 
 namespace SchoolApi.Controllers

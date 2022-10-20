@@ -23,6 +23,8 @@ builder.Services.AddTransient<SchoolInitializer>();
 builder.Services.AddScoped<CourseService>(); // Make CourseService injectable
 builder.Services.AddScoped<EnrollmentService>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<StudentService>();
+builder.Services.AddScoped<TeacherService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<EmailService>();
 builder.Services

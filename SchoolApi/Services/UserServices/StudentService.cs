@@ -1,4 +1,4 @@
-using SchoolApi.DTO;
+using SchoolApi.DTO.UserDTO;
 using SchoolApi.Models.UserModels;
 
 namespace SchoolApi.Services.UserServices;

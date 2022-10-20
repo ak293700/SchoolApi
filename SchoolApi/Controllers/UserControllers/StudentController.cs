@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using SchoolApi.DTO;
+using SchoolApi.DTO.UserDTO;
 using SchoolApi.Services.UserServices;
 
 namespace SchoolApi.Controllers.UserControllers;
@@ -17,12 +17,12 @@ public class StudentController : ControllerBase
 
 
     [HttpPost("register")]
-    public async Task<ActionResult<bool>> Register(RegisterUserDTO user)
+    public async Task<ActionResult> Register(RegisterUserDTO user)
     {
         bool result = await _studentService.Register(user);
         if (result == false)
             return BadRequest("Email already registered");
 
-        return Ok(result);
+        return Ok();
     }
 }

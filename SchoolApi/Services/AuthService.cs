@@ -4,7 +4,7 @@ using System.Security.Cryptography;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SchoolApi.DAL;
-using SchoolApi.DTO;
+using SchoolApi.DTO.UserDTO;
 using SchoolApi.Models.UserModels;
 
 namespace SchoolApi.Services;
@@ -43,7 +43,7 @@ public class AuthService
     /// <param name="password">The password you want to hash</param>
     /// <param name="passwordHash">The password will be stored in it</param>
     /// <param name="passwordSalt">The password salt will be stored in it</param>
-    public void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+    private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
     {
         using (HMACSHA512 hmac = new HMACSHA512())
         {
@@ -74,7 +74,7 @@ public class AuthService
     /// <param name="passwordHash">The reference one (hashed)</param>
     /// <param name="passwordSalt">the corresponding salt of passwordHash</param>
     /// <returns>True if the password is correct, else false</returns>
-    public bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
+    private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
     {
         // Init hmac with the same key as our password salt
         using (HMACSHA512 hmac = new HMACSHA512(passwordSalt))
@@ -91,13 +91,9 @@ public class AuthService
     /// Create a JWT token for the given user
     /// </summary>
     /// <returns>return the token as a string</returns>
-    public string CreateToken(User user)
+    private string CreateToken(User user)
     {
-        List<Claim> claims = new List<Claim>
-        {
-            new(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new(ClaimTypes.Email, user.Email),
-        };
+        List<Claim> claims = GetClaims(user);
 
         var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_authToken));
 
@@ -111,5 +107,26 @@ public class AuthService
         );
 
         return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+
+    private List<Claim> GetClaims(User user)
+    {
+        List<Claim> claims = new List<Claim>
+        {
+            new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new(ClaimTypes.Email, user.Email),
+        };
+
+        switch (user)
+        {
+            case Student:
+                claims.Add(new Claim(ClaimTypes.Role, UserType.Student.ToString()));
+                break;
+            case Teacher:
+                claims.Add(new Claim(ClaimTypes.Role, UserType.Teacher.ToString()));
+                break;
+        }
+
+        return claims;
     }
 }
