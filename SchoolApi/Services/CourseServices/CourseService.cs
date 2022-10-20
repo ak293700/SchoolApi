@@ -1,23 +1,23 @@
 using Microsoft.EntityFrameworkCore;
 using SchoolApi.DAL;
-using SchoolApi.Models;
+using SchoolApi.Models.CourseModels;
 
-namespace SchoolApi.Services;
+namespace SchoolApi.Services.CourseServices;
 
 public class CourseService
 {
     private readonly SchoolApiContext _context;
-    
+
     public CourseService(SchoolApiContext context)
     {
         _context = context;
     }
-    
+
     public async Task<IEnumerable<Course>> GetAll()
     {
         return await _context.Courses.ToListAsync();
     }
-    
+
     public async Task<Course?> GetOne(int id)
     {
         Course? course = await _context.Courses.FirstOrDefaultAsync(c => c.Id.Equals(id));
@@ -25,7 +25,7 @@ public class CourseService
             return null;
         return course;
     }
-    
+
     /// <summary>
     ///  Create a new course. Check if an identical course already exists.
     /// </summary>
@@ -38,13 +38,13 @@ public class CourseService
         if (course != null) // if so redirect to get it 
             return course;
 
-        course = new Course {Name = name};
+        course = new Course { Name = name };
         _context.Courses.Add(course);
         await _context.SaveChangesAsync();
-            
+
         return course;
     }
-    
+
     /// <summary>
     /// Delete a course
     /// </summary>
@@ -55,7 +55,7 @@ public class CourseService
         Course? course = await _context.Courses.FindAsync(id);
         if (course == null)
             return false;
-            
+
         _context.Courses.Remove(course);
         await _context.SaveChangesAsync();
         return true;

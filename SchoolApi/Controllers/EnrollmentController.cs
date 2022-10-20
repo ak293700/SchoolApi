@@ -1,7 +1,7 @@
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SchoolApi.DTO;
+using SchoolApi.DTO.EnrollmentDTO;
 using SchoolApi.Models;
 using SchoolApi.Services;
 
@@ -19,24 +19,24 @@ public class EnrollmentController : ControllerBase
     {
         _enrollmentService = enrollmentService;
     }
-    
+
     [HttpGet, AllowAnonymous]
     public async Task<IEnumerable<LiteEnrollmentDTO>> GetAll()
     {
         return (await _enrollmentService.GetAll()).Select(e => new LiteEnrollmentDTO(e));
     }
-    
+
     [HttpGet("{id}"), AllowAnonymous]
     public async Task<ActionResult<LiteEnrollmentDTO>> GetOne(int id)
     {
         Enrollment? enrollment = await _enrollmentService.GetOne(id);
         if (enrollment == null)
             return NotFound();
-        
+
         return new LiteEnrollmentDTO(enrollment);
     }
-    
-    
+
+
     [HttpPost]
     public async Task<ActionResult<LiteEnrollmentDTO>> CreateOne(int courseId, int studentId)
     {
@@ -46,7 +46,7 @@ public class EnrollmentController : ControllerBase
 
         return CreatedAtAction(nameof(GetOne), new { id = enrollment.Id }, new LiteEnrollmentDTO(enrollment));
     }
-    
+
     [HttpDelete("{id}")]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteOne(int id)
@@ -54,7 +54,7 @@ public class EnrollmentController : ControllerBase
         bool deleted = await _enrollmentService.DeleteOne(id);
         return deleted ? Ok() : NotFound();
     }
-    
+
     /// <summary>
     /// Get the list of course a student is enroll in.
     /// JWT token is used so no need of student id.

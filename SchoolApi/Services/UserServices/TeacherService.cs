@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using SchoolApi.DAL;
 using SchoolApi.DTO;
 using SchoolApi.DTO.UserDTO;
-using SchoolApi.Models;
+using SchoolApi.Models.CourseModels;
 using SchoolApi.Models.UserModels;
 
 namespace SchoolApi.Services.UserServices;

@@ -1,15 +1,14 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SchoolApi.DTO;
-using SchoolApi.Models;
-using SchoolApi.Services;
+using SchoolApi.Models.CourseModels;
+using SchoolApi.Services.CourseServices;
 
-namespace SchoolApi.Controllers
+namespace SchoolApi.Controllers.CourseControllers
 {
     [Route("api/[controller]")]
     [Produces("application/json")]
     [ApiController]
-    [Authorize]
     public class CourseController : ControllerBase
     {
         private readonly CourseService _courseService;
@@ -19,27 +18,27 @@ namespace SchoolApi.Controllers
             _courseService = courseService;
         }
 
-        [HttpGet, AllowAnonymous]
+        [HttpGet]
         public async Task<IEnumerable<LiteCourseDTO>> GetAll()
         {
             return (await _courseService.GetAll()).Select(c => new LiteCourseDTO(c));
         }
 
-        [HttpGet("{id}"), AllowAnonymous]
+        [HttpGet("{id}")]
         public async Task<ActionResult<LiteCourseDTO>> GetOne(int id)
         {
             Course? course = await _courseService.GetOne(id);
             if (course == null)
-               return NotFound();
+                return NotFound();
             return new LiteCourseDTO(course);
         }
 
         [HttpPost]
         [Authorize(Roles = "Admin,Teacher")] // Authorize Admin || Teacher
         public async Task<ActionResult<LiteCourseDTO>> CreateOne(string name)
-        { 
+        {
             Course result = await _courseService.CreateOne(name);
-            return CreatedAtAction("GetOne", new {id = result.Id}, new LiteCourseDTO(result));
+            return CreatedAtAction("GetOne", new { id = result.Id }, new LiteCourseDTO(result));
         }
 
         /// <returns>Empty response. 400 if the course hasn't been found, 200 else</returns>

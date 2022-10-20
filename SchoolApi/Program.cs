@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SchoolApi.DAL;
 using SchoolApi.Services;
+using SchoolApi.Services.CourseServices;
 using SchoolApi.Services.UserServices;
 using Swashbuckle.AspNetCore.Filters;
 
@@ -17,10 +18,13 @@ builder.Services.AddDbContext<SchoolApiContext>(options =>
     // options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
     string connectionString = builder.Configuration.GetConnectionString("MySqlConnection")
                               ?? throw new ArgumentException("Connection string not found");
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+
+    options.UseLazyLoadingProxies()
+        .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 });
 builder.Services.AddTransient<SchoolInitializer>();
 builder.Services.AddScoped<CourseService>(); // Make CourseService injectable
+builder.Services.AddScoped<CourseDetailService>(); // Make CourseService injectable
 builder.Services.AddScoped<EnrollmentService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<StudentService>();
@@ -80,7 +84,7 @@ else // dev mod
     app.UseSwaggerUI();
 
     // Uncomment to go back to the initial state
-    // SchoolApiContext.DropCreateDatabase(app);
+    SchoolApiContext.DropCreateDatabase(app);
 }
 
 app.UseHttpsRedirection();

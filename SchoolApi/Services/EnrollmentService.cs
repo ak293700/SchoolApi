@@ -4,7 +4,9 @@ using MimeKit;
 using MimeKit.Text;
 using SchoolApi.DAL;
 using SchoolApi.Models;
+using SchoolApi.Models.CourseModels;
 using SchoolApi.Models.UserModels;
+using SchoolApi.Services.CourseServices;
 
 namespace SchoolApi.Services;
 

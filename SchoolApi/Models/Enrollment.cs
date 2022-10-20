@@ -1,3 +1,4 @@
+using SchoolApi.Models.CourseModels;
 using SchoolApi.Models.UserModels;
 
 namespace SchoolApi.Models;

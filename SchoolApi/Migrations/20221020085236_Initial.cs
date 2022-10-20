@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SchoolApi.Migrations
 {
-    public partial class MySql : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -49,6 +49,25 @@ namespace SchoolApi.Migrations
                         name: "FK_Courses_Users_TeacherId",
                         column: x => x.TeacherId,
                         principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "CourseDetails",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    Price = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CourseDetails", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CourseDetails_Courses_Id",
+                        column: x => x.Id,
+                        principalTable: "Courses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
@@ -99,6 +118,9 @@ namespace SchoolApi.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "CourseDetails");
+
             migrationBuilder.DropTable(
                 name: "Enrollments");
 

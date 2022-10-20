@@ -1,4 +1,5 @@
 using SchoolApi.Models;
+using SchoolApi.Models.CourseModels;
 using SchoolApi.Models.UserModels;
 
 namespace SchoolApi.DAL;
@@ -91,7 +92,19 @@ public class SchoolInitializer
             new() { Name = "HTML", TeacherId = 6 },
             new() { Name = "CSS", TeacherId = 6 },
         };
-        courses.ForEach(s => _context.Courses.Add(s));
+        courses.ForEach(c => _context.Courses.Add(c));
+        _context.SaveChanges();
+
+        List<CourseDetail> courseDetails = new List<CourseDetail>
+        {
+            new() { Id = 1, Price = 150 },
+            new() { Id = 2, Price = 180 },
+            new() { Id = 3, Price = 250 },
+            new() { Id = 4, Price = 200 },
+            new() { Id = 5, Price = 100 },
+            new() { Id = 6, Price = 100 },
+        };
+        courseDetails.ForEach(c => _context.CourseDetails.Add(c));
         _context.SaveChanges();
 
         List<Enrollment> enrollments = new List<Enrollment>
@@ -102,7 +115,7 @@ public class SchoolInitializer
             new() { CourseId = 1, StudentId = 5 },
             new() { CourseId = 5, StudentId = 1 },
         };
-        enrollments.ForEach(s => _context.Enrollments.Add(s));
+        enrollments.ForEach(e => _context.Enrollments.Add(e));
         _context.SaveChanges();
     }
 }

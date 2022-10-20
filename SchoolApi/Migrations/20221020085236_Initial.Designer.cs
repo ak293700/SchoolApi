@@ -11,8 +11,8 @@ using SchoolApi.DAL;
 namespace SchoolApi.Migrations
 {
     [DbContext(typeof(SchoolApiContext))]
-    [Migration("20221019151403_MySql")]
-    partial class MySql
+    [Migration("20221020085236_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -21,7 +21,7 @@ namespace SchoolApi.Migrations
                 .HasAnnotation("ProductVersion", "6.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("SchoolApi.Models.Course", b =>
+            modelBuilder.Entity("SchoolApi.Models.CourseModels.Course", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -38,7 +38,20 @@ namespace SchoolApi.Migrations
 
                     b.HasIndex("TeacherId");
 
-                    b.ToTable("Courses", (string)null);
+                    b.ToTable("Courses");
+                });
+
+            modelBuilder.Entity("SchoolApi.Models.CourseModels.CourseDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Price")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CourseDetails");
                 });
 
             modelBuilder.Entity("SchoolApi.Models.Enrollment", b =>
@@ -59,10 +72,10 @@ namespace SchoolApi.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("Enrollments", (string)null);
+                    b.ToTable("Enrollments");
                 });
 
-            modelBuilder.Entity("SchoolApi.Models.User.User", b =>
+            modelBuilder.Entity("SchoolApi.Models.UserModels.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -85,21 +98,21 @@ namespace SchoolApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
 
                     b.HasDiscriminator<int>("UserType");
                 });
 
-            modelBuilder.Entity("SchoolApi.Models.User.Student", b =>
+            modelBuilder.Entity("SchoolApi.Models.UserModels.Student", b =>
                 {
-                    b.HasBaseType("SchoolApi.Models.User.User");
+                    b.HasBaseType("SchoolApi.Models.UserModels.User");
 
                     b.HasDiscriminator().HasValue(0);
                 });
 
-            modelBuilder.Entity("SchoolApi.Models.User.Teacher", b =>
+            modelBuilder.Entity("SchoolApi.Models.UserModels.Teacher", b =>
                 {
-                    b.HasBaseType("SchoolApi.Models.User.User");
+                    b.HasBaseType("SchoolApi.Models.UserModels.User");
 
                     b.Property<int>("Salary")
                         .HasColumnType("int");
@@ -107,9 +120,9 @@ namespace SchoolApi.Migrations
                     b.HasDiscriminator().HasValue(1);
                 });
 
-            modelBuilder.Entity("SchoolApi.Models.Course", b =>
+            modelBuilder.Entity("SchoolApi.Models.CourseModels.Course", b =>
                 {
-                    b.HasOne("SchoolApi.Models.User.Teacher", "Teacher")
+                    b.HasOne("SchoolApi.Models.UserModels.Teacher", "Teacher")
                         .WithMany("Courses")
                         .HasForeignKey("TeacherId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -118,15 +131,26 @@ namespace SchoolApi.Migrations
                     b.Navigation("Teacher");
                 });
 
+            modelBuilder.Entity("SchoolApi.Models.CourseModels.CourseDetail", b =>
+                {
+                    b.HasOne("SchoolApi.Models.CourseModels.Course", "Course")
+                        .WithMany()
+                        .HasForeignKey("Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Course");
+                });
+
             modelBuilder.Entity("SchoolApi.Models.Enrollment", b =>
                 {
-                    b.HasOne("SchoolApi.Models.Course", "Course")
+                    b.HasOne("SchoolApi.Models.CourseModels.Course", "Course")
                         .WithMany("Enrollments")
                         .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SchoolApi.Models.User.Student", "Student")
+                    b.HasOne("SchoolApi.Models.UserModels.Student", "Student")
                         .WithMany("Enrollments")
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -137,17 +161,17 @@ namespace SchoolApi.Migrations
                     b.Navigation("Student");
                 });
 
-            modelBuilder.Entity("SchoolApi.Models.Course", b =>
+            modelBuilder.Entity("SchoolApi.Models.CourseModels.Course", b =>
                 {
                     b.Navigation("Enrollments");
                 });
 
-            modelBuilder.Entity("SchoolApi.Models.User.Student", b =>
+            modelBuilder.Entity("SchoolApi.Models.UserModels.Student", b =>
                 {
                     b.Navigation("Enrollments");
                 });
 
-            modelBuilder.Entity("SchoolApi.Models.User.Teacher", b =>
+            modelBuilder.Entity("SchoolApi.Models.UserModels.Teacher", b =>
                 {
                     b.Navigation("Courses");
                 });
